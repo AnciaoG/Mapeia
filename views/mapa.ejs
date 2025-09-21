@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapas - Mapeia</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .map-item {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+      background: #fff;
+      border-radius: 8px;
+    }
+    .map-item a {
+      text-decoration: none;
+      color: #1a73e8;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mapas Disponíveis</h1>
+  <div class="map-grid">
+    <% mapas.forEach(function(mapa) { %>
+      <div class="map-item">
+        <a href="/mapaFiles/<%= mapa %>" target="_blank"><%= mapa %></a>
+      </div>
+    <% }); %>
+  </div>
+  <br>
+  <a href="/logout">Logout</a>
+</body>
+</html>
