@@ -13,21 +13,23 @@ function adminOnly(req, res, next) {
   next();
 }
 
-// Perfil/controle
-router.get("/", authRequired, (req, res) => {
-  if (req.session.isAdmin) {
-    // Admin vê todos os usuários
-    db.all("SELECT nome, email, datetime(data_cadastro,'localtime') as cadastro FROM usuarios", [], (err, usuarios) => {
-      if (err) return res.send("Erro ao buscar usuários");
-      res.render("perfil", { usuario: null, usuarios, isAdmin: true });
-    });
-  } else {
-    // Usuário normal vê apenas seus dados
-    db.get("SELECT nome, email, datetime(data_cadastro,'localtime') as cadastro FROM usuarios WHERE id = ?", [req.session.userId], (err, usuario) => {
-      if (err || !usuario) return res.send("Erro ao buscar usuário");
-      res.render("perfil", { usuario, usuarios: null, isAdmin: false });
-    });
-  }
+// Rota de controle do admin
+router.get("/", authRequired, adminOnly, (req, res) => {
+  // Buscar todos os usuários
+  db.all("SELECT id, nome, email, datetime(data_cadastro,'localtime') as cadastro FROM usuarios", [], (err, usuarios) => {
+    if (err) return res.send("Erro ao buscar usuários");
+    res.render("admin", { usuarios });
+  });
+});
+
+// Excluir usuário (admin)
+router.post("/excluir/:id", authRequired, adminOnly, (req, res) => {
+  const userId = req.params.id;
+
+  db.run("DELETE FROM usuarios WHERE id = ?", [userId], function(err) {
+    if (err) return res.send("Erro ao excluir usuário");
+    res.redirect("/admin");
+  });
 });
 
 module.exports = router;

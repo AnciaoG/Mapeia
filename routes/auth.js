@@ -13,7 +13,6 @@ router.get("/cadastro", (req, res) => {
 router.post("/cadastro", async (req, res) => {
   const { nome, email, senha, confirmSenha } = req.body;
 
-  // Validação básica
   if (!nome || !email || !senha || !confirmSenha) {
     return res.redirect("/cadastro?error=Todos os campos são obrigatórios");
   }
@@ -25,11 +24,17 @@ router.post("/cadastro", async (req, res) => {
   try {
     const hash = await bcrypt.hash(senha, 10);
 
+    // Por padrão, novo usuário é comum (isAdmin = 0)
     db.run(
-      "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
-      [nome, email, hash],
+      "INSERT INTO usuarios (nome, email, senha, isAdmin) VALUES (?, ?, ?, ?)",
+      [nome, email, hash, 0],
       function (err) {
-        if (err) return res.redirect("/cadastro?error=Email já cadastrado");
+        if (err) {
+          if (err.message.includes("UNIQUE")) {
+            return res.redirect("/cadastro?error=Email já cadastrado");
+          }
+          return res.redirect("/cadastro?error=Erro ao cadastrar usuário");
+        }
         return res.redirect("/login?success=Cadastro realizado com sucesso");
       }
     );
@@ -56,17 +61,37 @@ router.post("/login", (req, res) => {
     const valid = await bcrypt.compare(senha, usuario.senha);
     if (!valid) return res.redirect("/login?error=Email ou senha inválidos");
 
-    // Sessão
     req.session.userId = usuario.id;
     req.session.isAdmin = usuario.isAdmin === 1;
 
-    // Registrar login
     db.run("INSERT INTO logins (usuario_id) VALUES (?)", [usuario.id]);
 
-    // Redireciona para home (não só para mapas)
-    res.redirect("/");
+    // Redireciona conforme tipo de usuário
+    if (usuario.isAdmin === 1) res.redirect("/admin");
+    else res.redirect("/perfil");
   });
 });
+
+// ======================
+// EXCLUIR PERFIL (usuário)
+// ======================
+router.post("/perfil/excluir", (req, res) => {
+  if (!req.session.userId) return res.redirect("/login?error=Faça login primeiro");
+
+  const userId = req.session.userId;
+
+  // Excluir usuário
+  db.run("DELETE FROM usuarios WHERE id = ?", [userId], function(err) {
+    if (err) return res.send("Erro ao excluir usuário");
+
+    // Encerrar sessão
+    req.session.destroy(err => {
+      if (err) return res.send("Erro ao finalizar sessão");
+      res.redirect("/login?success=Perfil excluído com sucesso");
+    });
+  });
+});
+
 
 // ======================
 // ROTA DE LOGOUT

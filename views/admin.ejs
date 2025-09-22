@@ -2,64 +2,53 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - Mapeia</title>
+  <title>Admin - Controle - Mapeia</title>
   <link rel="stylesheet" href="/style.css">
-  <style>
-    h1 {
-      text-align: center;
-      color: #1a73e8;
-      margin-top: 20px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 80%;
-      margin: 20px auto;
-      background: #fff;
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background-color: #1a73e8;
-      color: white;
-    }
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
-    a {
-      display: block;
-      width: 100px;
-      margin: 20px auto;
-      text-align: center;
-      padding: 8px;
-      background: #1a73e8;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-    a:hover {
-      background: #155bb5;
-    }
-  </style>
 </head>
 <body>
-  <h1>Área do Administrador</h1>
-  <table>
-    <tr>
-      <th>Nome</th>
-      <th>Email</th>
-      <th>Data/Hora do Cadastro</th>
-    </tr>
-    <% usuarios.forEach(function(u){ %>
-      <tr>
-        <td><%= u.nome %></td>
-        <td><%= u.email %></td>
-        <td><%= u.cadastro %></td>
-      </tr>
-    <% }); %>
-  </table>
-  <a href="/logout">Logout</a>
+  <header>
+    <h1>Área do Administrador</h1>
+  </header>
+
+  <main>
+    <!-- Usuários Cadastrados -->
+    <section class="usuarios-section">
+      <h2>Usuários Cadastrados</h2>
+      <table class="usuarios-table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Data/Hora do Cadastro</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% usuarios.forEach(u => { %>
+            <tr>
+              <td><%= u.nome %></td>
+              <td><%= u.email %></td>
+              <td><%= u.cadastro %></td>
+              <td>
+                <form action="/admin/excluir/<%= u.id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                  <button type="submit" class="botao-admin excluir">Excluir</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Ações do Administrador -->
+    <section class="acoes-admin">
+      <h2>Ações do Administrador</h2>
+      <ul>
+        <li><a href="/cadastro" class="botao-admin">Cadastrar Novo Usuário</a></li>
+        <li><a href="/" class="botao-admin">Home</a></li>
+        <li><a href="/logout" class="botao-admin sair">Logout</a></li>
+      </ul>
+    </section>
+  </main>
 </body>
 </html>

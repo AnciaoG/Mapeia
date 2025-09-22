@@ -10,33 +10,35 @@
     <nav id="menu">
       <a href="/equipe">Equipe</a>
       <a href="/projeto">Sobre o Projeto</a>
-      <!-- Links de login/cadastro ou mapas/admin serão adicionados dinamicamente via JS -->
       <img src="/imagens/usuario.png" class="usuario-logo">
     </nav>
   </header>
 
+  <main>
+    <div class="logo-container">
+      <img src="/imagens/logo-mapeia-pt.png" alt="Logo Mapeia" class="logo-principal">
+    </div>
 
-  <h1>Login</h1>
+    <h1>Login</h1>
 
-  <p id="errorMsg" style="color:red;"></p>
-  <p id="successMsg" style="color:green;"></p>
+    <p id="errorMsg" style="color:red;"></p>
+    <p id="successMsg" style="color:green;"></p>
 
-  <form method="POST" action="/login">
-    <label>Email:</label><br>
-    <input type="email" name="email" placeholder="Digite seu email" required><br><br>
+    <form method="POST" action="/login" class="form-auth">
+      <label>Email:</label>
+      <input type="email" name="email" placeholder="Digite seu email" required>
 
-    <label>Senha:</label><br>
-    <input type="password" name="senha" placeholder="Digite sua senha" required><br><br>
+      <label>Senha:</label>
+      <input type="password" name="senha" placeholder="Digite sua senha" required>
 
-    <button type="submit">Entrar</button>
-  </form>
+      <button type="submit" class="botao-auth">Entrar</button>
+    </form>
 
-  <p>Ainda não tem conta? <a href="/cadastro">Cadastre-se</a></p>
-
-  <a href="/">Voltar</a>
+    <p>Ainda não tem conta? <a href="/cadastro">Cadastre-se</a></p>
+    <a href="/" class="voltar">Voltar</a>
+  </main>
 
   <script>
-    // Lê query string para mostrar mensagens
     const params = new URLSearchParams(window.location.search);
     const errorMsg = params.get("error");
     const successMsg = params.get("success");

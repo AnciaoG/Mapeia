@@ -2,33 +2,29 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title><%= isAdmin ? "Admin - Controle" : "Meu Perfil" %> - Mapeia</title>
+  <title>Meu Perfil - Mapeia</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h1><%= isAdmin ? "Área do Administrador" : "Meu Perfil" %></h1>
+  <header>
+    <h1>Meu Perfil</h1>
+  </header>
 
-  <% if (isAdmin) { %>
-    <table>
-      <tr>
-        <th>Nome</th>
-        <th>Email</th>
-        <th>Data/Hora do Cadastro</th>
-      </tr>
-      <% usuarios.forEach(u => { %>
-        <tr>
-          <td><%= u.nome %></td>
-          <td><%= u.email %></td>
-          <td><%= u.cadastro %></td>
-        </tr>
-      <% }) %>
-    </table>
-  <% } else { %>
-    <p><strong>Nome:</strong> <%= usuario.nome %></p>
-    <p><strong>Email:</strong> <%= usuario.email %></p>
-    <p><strong>Data/Hora do Cadastro:</strong> <%= usuario.cadastro %></p>
-  <% } %>
+  <main>
+    <section class="usuarios-section">
+      <img src="/imagens/usuario.png" class="usuario-logo-perfil">
+      <h2>Seus Dados</h2>
+      <p><strong>Nome:</strong> <%= usuario.nome %></p>
+      <p><strong>Email:</strong> <%= usuario.email %></p>
+      <p><strong>Data/Hora do Cadastro:</strong> <%= usuario.cadastro %></p>
+    </section>
 
-  <a href="/logout">Logout</a>
+    <section class="acoes-admin">
+      <ul>
+        <li><a href="/" class="botao-admin">Home</a></li>
+        <li><a href="/logout" class="botao-admin sair">Logout</a></li>
+      </ul>
+    </section>
+  </main>
 </body>
 </html>

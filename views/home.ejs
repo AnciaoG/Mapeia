@@ -3,11 +3,13 @@
     <a href="/">Home</a>
     <a href="/equipe">Equipe</a>
     <a href="/projeto">Sobre o Projeto</a>
+    <a href="/mapa">Mapas</a>
+
     <% if (!session.userId) { %>
       <a href="/login">Login</a>
     <% } else { %>
-      <a href="/mapa">Mapas</a>
       <a href="/perfil"><%= session.isAdmin ? "Controle/Admin" : "Meu Perfil" %></a>
+      <a href="/logout">Sair</a>
       <img src="/images/usuario.png" class="usuario-logo" alt="Usuário">
     <% } %>
   </nav>

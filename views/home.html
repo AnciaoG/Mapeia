@@ -8,16 +8,17 @@
 <body>
   <header>
     <nav id="menu">
+      <a href="/">Home</a>
       <a href="/equipe">Equipe</a>
       <a href="/projeto">Sobre o Projeto</a>
-      <!-- Links de login/cadastro ou mapas/admin serão adicionados dinamicamente via JS -->
+      <a href="/mapa" id="mapaLink">Mapas</a>
       <img src="/imagens/usuario.png" class="usuario-logo">
     </nav>
   </header>
 
   <main>
     <div class="logo-container">
-      <img src="/imagens/logo-mapeia.png" alt="Logo do Mapeia" class="logo">
+      <img src="/imagens/logo-mapeia.png" alt="Logo do Mapeia" class="logo-principal">
     </div>
 
     <div class="texto-home">
@@ -36,6 +37,28 @@
         testes, o Mapeia busca se consolidar como uma ferramenta inovadora para a cidade, 
         com potencial de expansão para integração de dados em tempo real e adaptação a outros municípios.
       </p>
+
+      <section class="map-previews">
+  <h2>Prévia dos Mapas</h2>
+  <div class="map-preview-grid">
+    <!-- Apenas os dois primeiros mapas -->
+    <div class="map-preview-item">
+      <h3>Mapa de Coelho Neto</h3>
+      <iframe src="/mapaFiles/qgis2web_2025_09_20-22_17_46_811048/index.html"></iframe>
+    </div>
+
+    <div class="map-preview-item">
+      <h3>Mapa do Maranhão</h3>
+      <iframe src="/mapaFiles/qgis2web_2025_09_20-22_20_12_291843/index.html"></iframe>
+    </div>
+  </div>
+
+  <div class="ver-mais-container">
+    <a href="/mapa" class="btn-ver-mais">Ver mais mapas</a>
+  </div>
+</section>
+
+
       <p class="importante">
        Importante: este site apresenta um protótipo em construção, sujeito a ajustes e melhorias constantes.
       </p>
@@ -45,48 +68,39 @@
   <footer>
     <img src="/imagens/logo-ifma.png" alt="Logo IFMA" class="footer-logo">
     <img src="/imagens/logo-fapema.png" alt="Logo FAPEMA" class="footer-logo">
-    <img src="/imagens/logo-mapeia.png" alt="Logo Mapeia" class="footer-logo">
+    <img src="/imagens/logo-mapeia-pt.png" alt="Logo Mapeia" class="footer-logo logo-mapeia">
   </footer>
 
   <script>
-    // Menu dinâmico baseado na sessão do usuário
     fetch("/session")
       .then(res => res.json())
       .then(data => {
         const menu = document.getElementById("menu");
+        const mapaLink = document.getElementById("mapaLink");
 
-        if (data.logged) {
-          // Link Mapas
-          const mapas = document.createElement("a");
-          mapas.href = "/mapa";
-          mapas.textContent = "Mapas";
-          menu.appendChild(mapas);
+        if (!data.logged) {
+          // Bloqueia clique no mapa e leva para login
+          mapaLink.addEventListener("click", e => {
+            e.preventDefault();
+            window.location.href = "/login?error=É necessário estar logado para acessar os mapas";
+          });
 
-          if (data.isAdmin) {
-            const controle = document.createElement("a");
-            controle.href = "/perfil";
-            controle.textContent = "Controle";
-            menu.appendChild(controle);
-          } else {
-            const perfil = document.createElement("a");
-            perfil.href = "/perfil";
-            perfil.textContent = "Meu Perfil";
-            menu.appendChild(perfil);
-          }
-
-          // Logout
-          const logout = document.createElement("a");
-          logout.href = "/logout";
-          logout.textContent = "Sair";
-          menu.appendChild(logout);
-
-        } else {
-          // Usuário não logado
+          // Adiciona login
           const login = document.createElement("a");
           login.href = "/login";
           login.textContent = "Login";
           menu.appendChild(login);
+        } else {
+          // Usuário logado
+          const perfil = document.createElement("a");
+          perfil.href = "/perfil";
+          perfil.textContent = data.isAdmin ? "Controle" : "Meu Perfil";
+          menu.appendChild(perfil);
 
+          const logout = document.createElement("a");
+          logout.href = "/logout";
+          logout.textContent = "Sair";
+          menu.appendChild(logout);
         }
       });
   </script>

@@ -6,40 +6,43 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-
   <header>
     <nav id="menu">
       <a href="/equipe">Equipe</a>
       <a href="/projeto">Sobre o Projeto</a>
-      <!-- Links de login/cadastro ou mapas/admin serão adicionados dinamicamente via JS -->
       <img src="/imagens/usuario.png" class="usuario-logo">
     </nav>
   </header>
 
-  <h1>Cadastro</h1>
+  <main>
+    <div class="logo-container">
+      <img src="/imagens/logo-mapeia-pt.png" alt="Logo Mapeia" class="logo-principal">
+    </div>
 
-  <p id="errorMsg" style="color:red;"></p>
-  <p id="successMsg" style="color:green;"></p>
+    <h1>Cadastro</h1>
 
-  <form method="POST" action="/cadastro">
-    <label>Nome:</label><br>
-    <input type="text" name="nome" required><br><br>
+    <p id="errorMsg" style="color:red;"></p>
+    <p id="successMsg" style="color:green;"></p>
 
-    <label>Email:</label><br>
-    <input type="email" name="email" required><br><br>
+    <form method="POST" action="/cadastro" class="form-auth">
+      <label>Nome:</label>
+      <input type="text" name="nome" required>
 
-    <label>Senha:</label><br>
-    <input type="password" name="senha" required><br><br>
+      <label>Email:</label>
+      <input type="email" name="email" required>
 
-    <label>Confirmar Senha:</label><br>
-    <input type="password" name="senha2" required><br><br>
+      <label>Senha:</label>
+      <input type="password" name="senha" required>
 
-    <button type="submit">Cadastrar</button>
-  </form>
+      <label>Confirmar Senha:</label>
+      <input type="password" name="confirmSenha" required> <!-- CORRIGIDO AQUI -->
 
-  <p>Já possui conta? <a href="/login">Login</a></p>
+      <button type="submit" class="botao-auth">Cadastrar</button>
+    </form>
 
-  <a href="/">Voltar</a>
+    <p>Já possui conta? <a href="/login">Login</a></p>
+    <a href="/" class="voltar">Voltar</a>
+  </main>
 
   <script>
     const params = new URLSearchParams(window.location.search);
