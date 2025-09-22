@@ -6,12 +6,89 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <h1>Bem-vindo ao Mapeia 🚀</h1>
-  <nav>
-    <a href="/equipe">Equipe</a> | 
-    <a href="/projeto">Sobre o Projeto</a> | 
-    <a href="/login">Login</a> | 
-    <a href="/cadastro">Cadastro</a>
-  </nav>
+  <header>
+    <nav id="menu">
+      <a href="/equipe">Equipe</a>
+      <a href="/projeto">Sobre o Projeto</a>
+      <!-- Links de login/cadastro ou mapas/admin serão adicionados dinamicamente via JS -->
+      <img src="/imagens/usuario.png" class="usuario-logo">
+    </nav>
+  </header>
+
+  <main>
+    <div class="logo-container">
+      <img src="/imagens/logo-mapeia.png" alt="Logo do Mapeia" class="logo">
+    </div>
+
+    <div class="texto-home">
+      <h1>Bem-vindo ao Mapeia 🚀</h1>
+      <p>
+        O Mapeia é um protótipo de Sistema de Informação Geográfica na Web (SIGWeb), 
+        criado com o objetivo de apoiar a gestão urbana no município de Coelho Neto (MA). 
+        A plataforma foi pensada para reunir e disponibilizar dados sobre alagamentos, 
+        segurança pública e tráfego, oferecendo uma forma acessível e interativa de análise 
+        e visualização para gestores e cidadãos.
+      </p>
+      <p>
+        O sistema já conta com funcionalidades como consulta espacial, visualização de camadas 
+        temáticas e geração de relatórios, possibilitando um primeiro passo importante para o 
+        diagnóstico de problemas urbanos. Apesar de ainda estar em fase de desenvolvimento e 
+        testes, o Mapeia busca se consolidar como uma ferramenta inovadora para a cidade, 
+        com potencial de expansão para integração de dados em tempo real e adaptação a outros municípios.
+      </p>
+      <p class="importante">
+       Importante: este site apresenta um protótipo em construção, sujeito a ajustes e melhorias constantes.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <img src="/imagens/logo-ifma.png" alt="Logo IFMA" class="footer-logo">
+    <img src="/imagens/logo-fapema.png" alt="Logo FAPEMA" class="footer-logo">
+    <img src="/imagens/logo-mapeia.png" alt="Logo Mapeia" class="footer-logo">
+  </footer>
+
+  <script>
+    // Menu dinâmico baseado na sessão do usuário
+    fetch("/session")
+      .then(res => res.json())
+      .then(data => {
+        const menu = document.getElementById("menu");
+
+        if (data.logged) {
+          // Link Mapas
+          const mapas = document.createElement("a");
+          mapas.href = "/mapa";
+          mapas.textContent = "Mapas";
+          menu.appendChild(mapas);
+
+          if (data.isAdmin) {
+            const controle = document.createElement("a");
+            controle.href = "/perfil";
+            controle.textContent = "Controle";
+            menu.appendChild(controle);
+          } else {
+            const perfil = document.createElement("a");
+            perfil.href = "/perfil";
+            perfil.textContent = "Meu Perfil";
+            menu.appendChild(perfil);
+          }
+
+          // Logout
+          const logout = document.createElement("a");
+          logout.href = "/logout";
+          logout.textContent = "Sair";
+          menu.appendChild(logout);
+
+        } else {
+          // Usuário não logado
+          const login = document.createElement("a");
+          login.href = "/login";
+          login.textContent = "Login";
+          menu.appendChild(login);
+
+        }
+      });
+  </script>
 </body>
 </html>

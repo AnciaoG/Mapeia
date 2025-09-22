@@ -12,7 +12,8 @@ db.serialize(() => {
     nome TEXT,
     email TEXT UNIQUE,
     senha TEXT,
-    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+    data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP,
+    isAdmin INTEGER DEFAULT 0
   )`);
 
   db.run(`CREATE TABLE IF NOT EXISTS logins (

@@ -6,16 +6,48 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
+  <header>
+    <nav id="menu">
+      <a href="/equipe">Equipe</a>
+      <a href="/projeto">Sobre o Projeto</a>
+      <!-- Links de login/cadastro ou mapas/admin serão adicionados dinamicamente via JS -->
+      <img src="/imagens/usuario.png" class="usuario-logo">
+    </nav>
+  </header>
+
   <h1>Cadastro</h1>
+
+  <p id="errorMsg" style="color:red;"></p>
+  <p id="successMsg" style="color:green;"></p>
+
   <form method="POST" action="/cadastro">
     <label>Nome:</label><br>
     <input type="text" name="nome" required><br><br>
+
     <label>Email:</label><br>
     <input type="email" name="email" required><br><br>
+
     <label>Senha:</label><br>
     <input type="password" name="senha" required><br><br>
+
+    <label>Confirmar Senha:</label><br>
+    <input type="password" name="senha2" required><br><br>
+
     <button type="submit">Cadastrar</button>
   </form>
+
   <p>Já possui conta? <a href="/login">Login</a></p>
+
+  <a href="/">Voltar</a>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const errorMsg = params.get("error");
+    const successMsg = params.get("success");
+
+    if (errorMsg) document.getElementById("errorMsg").textContent = errorMsg;
+    if (successMsg) document.getElementById("successMsg").textContent = successMsg;
+  </script>
 </body>
 </html>

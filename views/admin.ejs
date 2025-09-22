@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Mapeia</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    h1 {
+      text-align: center;
+      color: #1a73e8;
+      margin-top: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 80%;
+      margin: 20px auto;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #1a73e8;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    a {
+      display: block;
+      width: 100px;
+      margin: 20px auto;
+      text-align: center;
+      padding: 8px;
+      background: #1a73e8;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    a:hover {
+      background: #155bb5;
+    }
+  </style>
+</head>
+<body>
+  <h1>Área do Administrador</h1>
+  <table>
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Data/Hora do Cadastro</th>
+    </tr>
+    <% usuarios.forEach(function(u){ %>
+      <tr>
+        <td><%= u.nome %></td>
+        <td><%= u.email %></td>
+        <td><%= u.cadastro %></td>
+      </tr>
+    <% }); %>
+  </table>
+  <a href="/logout">Logout</a>
+</body>
+</html>

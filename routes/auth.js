@@ -1,69 +1,80 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 const db = require("../db");
-const path = require("path");
 const router = express.Router();
 
-// Caminho base da pasta views
-const viewsPath = path.resolve("views");
-
-// Página de cadastro
+// ======================
+// ROTA DE CADASTRO
+// ======================
 router.get("/cadastro", (req, res) => {
-  res.sendFile(path.join(viewsPath, "cadastro.html"));
+  res.sendFile("cadastro.html", { root: "./views" });
 });
 
-// Cadastro POST
 router.post("/cadastro", async (req, res) => {
-  const { nome, email, senha } = req.body;
-  if (!nome || !email || !senha) return res.send("Preencha todos os campos!");
+  const { nome, email, senha, confirmSenha } = req.body;
+
+  // Validação básica
+  if (!nome || !email || !senha || !confirmSenha) {
+    return res.redirect("/cadastro?error=Todos os campos são obrigatórios");
+  }
+
+  if (senha !== confirmSenha) {
+    return res.redirect("/cadastro?error=Senhas não conferem");
+  }
 
   try {
     const hash = await bcrypt.hash(senha, 10);
-    const query = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
-    db.run(query, [nome, email, hash], function(err) {
-      if (err) return res.send("Erro ao cadastrar usuário: " + err.message);
-      res.redirect("/login");
-    });
+
+    db.run(
+      "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)",
+      [nome, email, hash],
+      function (err) {
+        if (err) return res.redirect("/cadastro?error=Email já cadastrado");
+        return res.redirect("/login?success=Cadastro realizado com sucesso");
+      }
+    );
   } catch (err) {
-    return res.send("Erro no cadastro: " + err.message);
+    return res.redirect("/cadastro?error=Erro ao cadastrar usuário");
   }
 });
 
-// Página de login
+// ======================
+// ROTA DE LOGIN
+// ======================
 router.get("/login", (req, res) => {
-  res.sendFile(path.join(viewsPath, "login.html"));
+  res.sendFile("login.html", { root: "./views" });
 });
 
-// Login POST
 router.post("/login", (req, res) => {
   const { email, senha } = req.body;
-  if (!email || !senha) return res.send("Preencha todos os campos!");
 
-  db.get("SELECT * FROM usuarios WHERE email = ?", [email], async (err, user) => {
-    if (err) return res.send("Erro no banco de dados");
-    if (!user) return res.send("Usuário não encontrado!");
+  if (!email || !senha) return res.redirect("/login?error=Preencha todos os campos");
 
-    const match = await bcrypt.compare(senha, user.senha);
-    if (!match) return res.send("Senha incorreta!");
+  db.get("SELECT * FROM usuarios WHERE email = ?", [email], async (err, usuario) => {
+    if (err || !usuario) return res.redirect("/login?error=Email ou senha inválidos");
 
-    // Cria a sessão
-    req.session.userId = user.id;
+    const valid = await bcrypt.compare(senha, usuario.senha);
+    if (!valid) return res.redirect("/login?error=Email ou senha inválidos");
+
+    // Sessão
+    req.session.userId = usuario.id;
+    req.session.isAdmin = usuario.isAdmin === 1;
 
     // Registrar login
-    const queryLogin = "INSERT INTO logins (usuario_id) VALUES (?)";
-    db.run(queryLogin, [user.id], (err) => {
-      if (err) console.log("Erro ao registrar login:", err.message);
-    });
+    db.run("INSERT INTO logins (usuario_id) VALUES (?)", [usuario.id]);
 
-    res.redirect("/mapa");
+    // Redireciona para home (não só para mapas)
+    res.redirect("/");
   });
 });
 
-// Logout
+// ======================
+// ROTA DE LOGOUT
+// ======================
 router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) console.log("Erro ao encerrar sessão:", err);
-    res.redirect("/");
+  req.session.destroy(err => {
+    if (err) return res.send("Erro ao fazer logout");
+    res.redirect("/login?success=Logout realizado com sucesso");
   });
 });
 
